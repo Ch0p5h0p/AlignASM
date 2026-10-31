@@ -1,6 +1,5 @@
 use clap::Parser;
-use std::fs::File;
-use std::io::{self, Read, Write};
+use std::io::{self, Read};
 use std::path::PathBuf;
 use std::process;
 
@@ -26,6 +25,8 @@ struct ArgSet {
     /// Ignored if --in-place or --check are used
     #[arg(value_name = "FILE", conflicts_with_all = ["in_place", "check"])]
     file: Option<PathBuf>,
+
+    //TODO: replace clap-generated --help with a custom guide
 }
 
 fn main() -> io::Result<()> {
@@ -47,14 +48,20 @@ fn main() -> io::Result<()> {
         (content, None, false, false)
     };
 
-    let formatted = format::format_lines(parser::parse_asm(raw_content));
+    let formatted = format::format_lines(parser::parse_asm(raw_content.clone()));
 
     if check {
-        todo!("implement --check");
+        if formatted == raw_content {
+            println!("Properly formatted.");
+            process::exit(0)
+        } else {
+            println!("Improperly formatted.");
+            process::exit(1)
+        }
     } else if in_place {
-        todo!("implement --in_place");
+        std::fs::write(target_file.unwrap(), formatted)?;
     } else {
-        println!("{formatted}");
+        print!("{formatted}");
     }
     Ok(())
 }

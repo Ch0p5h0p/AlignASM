@@ -9,17 +9,27 @@ pub struct FormatGuide {
 pub fn format_lines(lines:Vec<AsmLine>) -> String {
     let format_guide = make_guide(&lines);
     let collapsed = collapse_lines(lines);
-    collapsed.into_iter()
+    let formatted: String = collapsed.into_iter()
         .map(|line| format_line(line, &format_guide))
-        .collect()
+        .collect();
+
+    formatted.trim_end_matches('\n').to_string() + "\n"
 }
 
 fn format_line(line:AsmLine, guide:&FormatGuide) -> String { 
+    if line.label.is_none()
+        && line.instruction.is_none()
+        && line.operands.is_none()
+        && line.comment.is_none()
+    {
+        return "\n".to_string();
+    }
+
     let label = line.label.as_deref().unwrap_or("");
     let instruction = line.instruction.as_deref().unwrap_or("");
     let operands = line.operands.as_deref().unwrap_or("");
     let comment = line.comment.as_deref().unwrap_or("");
-    
+
     let label_size = guide.label_size;
     let instr_size = guide.instruction_size;
     let opers_size = guide.operands_size;

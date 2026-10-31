@@ -29,7 +29,13 @@ pub fn parse_asm(code:String) -> Vec<AsmLine>{
 }
 
 fn get_lines(code:&str) -> Vec<&str> {
-    code.split('\n').map(|x| x.trim()).collect::<Vec<&str>>()
+    let mut lines: Vec<&str> = code.split('\n').collect();
+    
+    if lines.last() == Some(&"") {
+        lines.pop();
+    }
+
+    lines.into_iter().map(str::trim).collect()
 }
 
 fn parse_line(line:String) -> AsmLine {
