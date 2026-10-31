@@ -1,6 +1,9 @@
 [package]
 name = "alignasm"
 version = "1.0.0"
+description = "A column-organized formatter for NASM"
+license = "MIT"
+repository = "https://github.com/Ch0p5h0p/AlignASM"
 edition = "2024"
 
 [dependencies]
